@@ -1,7 +1,24 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "../api/axios";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      await axios.post("/login", { email, password });
+      setEmail("");
+      setPassword("");
+      navigate("/");
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <section className="bg-[#F4F7FF] py-20 lg:py-[120px]">
       <div className="container mx-auto">
@@ -23,10 +40,12 @@ const Login = () => {
             "
             >
               <div className="mb-10 text-center md:mb-16">Laraveller</div>
-              <form>
+              <form onSubmit={handleLogin}>
                 <div className="mb-4">
                   <input
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
                     className="
                     bordder-[#E9EDF4]
@@ -50,6 +69,8 @@ const Login = () => {
                 <div className="mb-4">
                   <input
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
                     className="
                     bordder-[#E9EDF4]
