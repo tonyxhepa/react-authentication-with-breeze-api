@@ -7,11 +7,14 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password_confirmation, setPasswordConfirmation] = useState("");
+  const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
+
+  const csrf = () => axios.get("/sanctum/csrf-cookie");
 
   const handleRegister = async (event) => {
     event.preventDefault();
-
+    await csrf();
     try {
       await axios.post("/register", {
         name,
@@ -25,7 +28,9 @@ const Register = () => {
       setName("");
       navigate("/");
     } catch (e) {
-      console.log(e);
+      if (e.response.status === 422) {
+        setErrors(e.response.data.errors);
+      }
     }
   };
 
@@ -72,9 +77,13 @@ const Register = () => {
                     focus-visible:shadow-none
                   "
                   />
-                  <div className="flex">
-                    <span className="text-red-400 text-sm m-2 p-2">error</span>
-                  </div>
+                  {errors.name && (
+                    <div className="flex">
+                      <span className="text-red-400 text-sm m-2 p-2">
+                        {errors.name[0]}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="mb-4">
                   <input
@@ -97,9 +106,13 @@ const Register = () => {
                     focus-visible:shadow-none
                   "
                   />
-                  <div className="flex">
-                    <span className="text-red-400 text-sm m-2 p-2">error</span>
-                  </div>
+                  {errors.email && (
+                    <div className="flex">
+                      <span className="text-red-400 text-sm m-2 p-2">
+                        {errors.email[0]}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="mb-4">
                   <input
@@ -122,9 +135,13 @@ const Register = () => {
                     focus-visible:shadow-none
                   "
                   />
-                  <div className="flex">
-                    <span className="text-red-400 text-sm m-2 p-2">error</span>
-                  </div>
+                  {errors.password && (
+                    <div className="flex">
+                      <span className="text-red-400 text-sm m-2 p-2">
+                        {errors.password[0]}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <div className="mb-4">
                   <input
@@ -147,9 +164,6 @@ const Register = () => {
                     focus-visible:shadow-none
                   "
                   />
-                  <div className="flex">
-                    <span className="text-red-400 text-sm m-2 p-2">error</span>
-                  </div>
                 </div>
                 <div className="mb-10">
                   <button
