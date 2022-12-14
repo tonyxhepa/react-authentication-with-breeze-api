@@ -162,21 +162,11 @@ const Register = () => {
                   </button>
                 </div>
               </form>
-              <Link
-                to="/forgot-password"
-                className="
-                mb-2
-                inline-block
-                text-base text-[#adadad]
-                hover:text-primary hover:underline
-              "
-              >
-                Forgot Password?
-              </Link>
+
               <p className="text-base text-[#adadad]">
-                Not a member yet?
-                <Link to="/register" className="text-primary hover:underline">
-                  Sign Up
+                Alredy member?
+                <Link to="/login" className="text-primary hover:underline">
+                  Sign in
                 </Link>
               </p>
             </div>
