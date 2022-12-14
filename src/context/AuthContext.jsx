@@ -49,6 +49,36 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  const resetPassword = async ({ setStatus, ...props }) => {
+    await csrf();
+
+    setErrors([]);
+    setStatus(null);
+
+    try {
+      const { status } = axios.post("/reset-password", {
+        token: router.query.token,
+        ...props,
+      });
+      setStatus(status);
+    } catch (e) {
+      if (e.response.status === 422) {
+        setErrors(e.response.data.errors);
+      }
+    }
+
+    axios
+      .post("/reset-password", { token: router.query.token, ...props })
+      .then((response) =>
+        router.push("/login?reset=" + btoa(response.data.status))
+      )
+      .catch((error) => {
+        if (error.response.status !== 422) throw error;
+
+        setErrors(error.response.data.errors);
+      });
+  };
+
   useEffect(() => {
     if (!user) {
       getUser();
@@ -57,7 +87,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, errors, getUser, login, register, logout }}
+      value={{ user, errors, getUser, login, register, logout, csrf }}
     >
       {children}
     </AuthContext.Provider>
